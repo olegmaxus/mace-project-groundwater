@@ -20,7 +20,6 @@ def findIndex(str):
         if(s == '-'):
             number += s
         if(s == '.'):
-            number += '0'
             number += s
     if (len(number) < 4):
         return "error"
