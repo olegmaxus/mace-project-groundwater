@@ -2,12 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly
 import pandas as pd
-import plotly.graph_objects as go
-import plotly.subplots as subplt
 from mpl_toolkits.mplot3d import Axes3D, axes3d
 from scipy import interpolate
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
+import matplotlib.gridspec as gridspec
 
 data_sets = {
     'model parameters':
@@ -30,27 +29,43 @@ def load_data_frames(which: str = 'null'):
         return ret_status[which]
 
 
-df = load_data_frames('model parameters new')
-print(df['2020'][0])
+parameters_df = load_data_frames(which='model parameters new')
+springs_df = load_data_frames(which='springs')
 
 
-def define_equilibrium_surface(year: str) -> tuple:
+def define_equilibrium_surface(year: str = '2000') -> tuple:
 
-    # loading a data frame #
-
-    df = load_data_frames(which='model parameters new')
+    # creating a mash for input N, GP variables  #
 
     n = np.linspace(-1.2, 1.2, 48)
     gp = np.linspace(-1.2, 1.2, 48)
     N, GP = np.meshgrid(n, gp)
-    a, b = df[year][0], df[year][1]
+
+    # getting parameters' values #
+
+    a, b = parameters_df[year][0], parameters_df[year][1]
+
     S = a * GP ** 3 + b * GP * N
+
+    # bounding the surface by the omitted polygons #
+
     S[S > 1.5] = np.nan
     S[S < -1.5] = np.nan
+
     return N, S, GP
 
 
-def plot_equilibrium_surface(year: str):
+def define_bifurcation_curve(year: str = '2000') -> tuple:
+
+    a, b = parameters_df[year][0], parameters_df[year][1]
+    N = np.linspace(0., 1.3, 100)
+    S_1 = a * (np.sqrt(N * (-b)/(3 * a)) ** 3) + b * N * np.sqrt(N * (-b)/(3 * a))  # first bifurcation curve component
+    S_2 = a * (- np.sqrt(N * (-b)/(3 * a)) ** 3) - b * N * np.sqrt(N * (-b)/(3 * a)) # second bifurcation curve component
+
+    return N, S_1, S_2
+
+
+def plot_equilibrium_surface(year: str = '2000'):
 
     N, S, GP = define_equilibrium_surface(year)
 
@@ -63,17 +78,13 @@ def plot_equilibrium_surface(year: str):
 
     # plotting the cusp (bifurcation curves) #
 
-    N = np.linspace(0., 1.3, 100)
-
-    S_1 = -2.61 * (np.sqrt(N * 32 / 261) ** 3) + 0.96 * N * np.sqrt(N * 32 / 261)  # first bifurcation curve component
-    S_2 = 2.61 * (np.sqrt(N * 32 / 261) ** 3) - 0.96 * N * np.sqrt(N * 32 / 261)  # second bifurcation curve component
+    N, S_1, S_2 = define_bifurcation_curve(year=year)
 
     _ = ax.plot(N, S_1, color='#000000', label='Bifurcation curve', zdir='z', zs=-1.1)
     _ = ax.plot(N, S_2, color='#000000', zdir='z', zs=-1.1)
 
     # plotting the spring distribution scatter (according to the article data) #
 
-    springs_df = load_data_frames(which='springs')
     scatter_springs = ax.scatter(springs_df[year + 'y'].values, springs_df[year + 'x'].values, label='Springs (Samples)',
                                  color='#a60707', alpha=0.7, zdir='z', zs=-1.1)
 
@@ -95,3 +106,60 @@ def plot_equilibrium_surface(year: str):
     ax.legend(loc='center left', bbox_to_anchor=(1., .87), fontsize=9)
     plt.show()
 
+    return
+
+
+def plot_year_samples(mean_lines: bool = False):
+
+    N_00, S_100, S_200 = define_bifurcation_curve('2000')
+    N_10, S_110, S_210 = define_bifurcation_curve('2010')
+    N_20, S_120, S_220 = define_bifurcation_curve('2020')
+
+    gs = gridspec.GridSpec(1, 3)
+    fig = plt.figure()
+
+    ax00 = fig.add_subplot(gs[0, 0])
+    ax00.plot(N_00, S_100, color='#d0631b', label='Bifurcation curve')
+    ax00.plot(N_00, S_200, color='#d0631b')
+    ax00.set_xlabel('Natural composite index $(N)$')
+    ax00.set_ylabel('Anthropogenic composite index $(S)$')
+    ax00.scatter(springs_df['2000y'].values, springs_df['2000x'].values, label='Springs (Samples)', alpha=0.5, color='#5bc3ec')
+
+    if mean_lines:
+        mean_line = [springs_df['2000x'].values.mean()] * len(N_00)
+        ax00.plot(N_00, mean_line, color='#000000', linestyle='--', linewidth=3, label='Mean line for springs data')
+
+    ax00.legend(title='2000 yr.', loc=2, fontsize=9)
+
+    ax10 = fig.add_subplot(gs[0, 1])
+    ax10.plot(N_10, S_110, color='#d0631b', label='Bifurcation curve')
+    ax10.plot(N_10, S_210, color='#d0631b')
+    ax10.set_xlabel('Natural composite index $(N)$')
+    ax10.set_ylabel('Anthropogenic composite index $(S)$')
+    ax10.scatter(springs_df['2010y'].values, springs_df['2010x'].values, label='Springs (Samples)', alpha=0.5, color='#5bc3ec')
+
+    if mean_lines:
+        mean_line = [springs_df['2010x'].values.mean()] * len(N_10)
+        ax10.plot(N_10, mean_line, color='#000000', linestyle='--', linewidth=3, label='Mean line for springs data')
+
+    ax10.legend(title='2010 yr.', loc=2, fontsize=9)
+
+    ax20 = fig.add_subplot(gs[0, 2])
+    ax20.plot(N_00, S_120, color='#d0631b', label='Bifurcation curve')
+    ax20.plot(N_00, S_220, color='#d0631b')
+    ax20.set_xlabel('Natural composite index $(N)$')
+    ax20.set_ylabel('Anthropogenic composite index $(S)$')
+    ax20.scatter(springs_df['2020y'].values, springs_df['2020x'].values, label='Springs (Samples)', alpha=0.5, color='#5bc3ec')
+
+    if mean_lines:
+        mean_line = [springs_df['2020x'].values.mean()] * len(N_00)
+        ax20.plot(N_20, mean_line, color='#000000', linestyle='--', linewidth=3, label='Mean line for springs data')
+
+    ax20.legend(title='2020 yr.', loc=2, fontsize=9)
+
+    plt.show()
+
+    return
+
+if __name__ == '__main__':
+    plot_year_samples(True)
