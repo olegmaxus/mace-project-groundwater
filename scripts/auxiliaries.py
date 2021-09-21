@@ -86,7 +86,7 @@ def plot_equilibrium_surface(year: str = '2000'):
     # plotting the spring distribution scatter (according to the article data) #
 
     scatter_springs = ax.scatter(springs_df[year + 'y'].values, springs_df[year + 'x'].values, label='Springs (Samples)',
-                                 color='#a60707', alpha=0.7, zdir='z', zs=-1.1)
+                                 color='#ae0001', edgecolor='#000000', linewidths=0.1, zdir='z', zs=-1.1)
 
     # setting the aesthetics #
 
@@ -123,7 +123,7 @@ def plot_year_samples(mean_lines: bool = False):
     ax00.plot(N_00, S_200, color='#d0631b')
     ax00.set_xlabel('Natural composite index $(N)$')
     ax00.set_ylabel('Anthropogenic composite index $(S)$')
-    ax00.scatter(springs_df['2000y'].values, springs_df['2000x'].values, label='Springs (Samples)', alpha=0.5, color='#5bc3ec')
+    ax00.scatter(springs_df['2000y'].values, springs_df['2000x'].values, label='Springs (Samples)', linewidths=0.5, edgecolor='#000000', color='#5bc3ec')
 
     if mean_lines:
         mean_line = [springs_df['2000x'].values.mean()] * len(N_00)
@@ -136,7 +136,7 @@ def plot_year_samples(mean_lines: bool = False):
     ax10.plot(N_10, S_210, color='#d0631b')
     ax10.set_xlabel('Natural composite index $(N)$')
     ax10.set_ylabel('Anthropogenic composite index $(S)$')
-    ax10.scatter(springs_df['2010y'].values, springs_df['2010x'].values, label='Springs (Samples)', alpha=0.5, color='#5bc3ec')
+    ax10.scatter(springs_df['2010y'].values, springs_df['2010x'].values, label='Springs (Samples)', linewidths=0.5, edgecolor='#000000', color='#5bc3ec')
 
     if mean_lines:
         mean_line = [springs_df['2010x'].values.mean()] * len(N_10)
@@ -149,7 +149,7 @@ def plot_year_samples(mean_lines: bool = False):
     ax20.plot(N_00, S_220, color='#d0631b')
     ax20.set_xlabel('Natural composite index $(N)$')
     ax20.set_ylabel('Anthropogenic composite index $(S)$')
-    ax20.scatter(springs_df['2020y'].values, springs_df['2020x'].values, label='Springs (Samples)', alpha=0.5, color='#5bc3ec')
+    ax20.scatter(springs_df['2020y'].values, springs_df['2020x'].values, label='Springs (Samples)', linewidths=0.5, edgecolor='#000000', color='#5bc3ec')
 
     if mean_lines:
         mean_line = [springs_df['2020x'].values.mean()] * len(N_00)
@@ -161,5 +161,7 @@ def plot_year_samples(mean_lines: bool = False):
 
     return
 
+
 if __name__ == '__main__':
     plot_year_samples(True)
+    plot_equilibrium_surface('2010')
