@@ -26,7 +26,6 @@ def findIndex(str):
     else:
         return number
             
-    
 with open("/Users/dimasokolov/Desktop/finance/dataset.html", "r") as f:
     
     contents = f.read()
