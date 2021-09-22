@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import plotly
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D, axes3d
 from scipy import interpolate
+import matplotlib as mpl
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import matplotlib.gridspec as gridspec
@@ -14,14 +14,20 @@ data_sets = {
     'model parameters new':
         'https://raw.githubusercontent.com/olegmaxus/mace-project-groundwater/master/data/ModelParametersReformatted.csv',
     'springs':
-        'https://raw.githubusercontent.com/olegmaxus/mace-project-groundwater/master/data/datasetSptrings.csv'}
+        'https://raw.githubusercontent.com/olegmaxus/mace-project-groundwater/master/data/datasetSptrings.csv',
+    'CCM':
+        'https://raw.githubusercontent.com/olegmaxus/mace-project-groundwater/master/data/CCM-PCA.csv',
+    'CFMF':
+        'https://raw.githubusercontent.com/olegmaxus/mace-project-groundwater/master/data/CFMFs.csv'}
 
 
 def load_data_frames(which: str = 'null'):
 
     ret_status = {'model parameters': pd.read_csv(data_sets['model parameters']),
                   'model parameters new': pd.read_csv(data_sets['model parameters new']),
-                  'springs': pd.read_csv(data_sets['springs'])}
+                  'springs': pd.read_csv(data_sets['springs']),
+                  'CCM': pd.read_csv(data_sets['CCM']),
+                  'CFMF': pd.read_csv(data_sets['CFMF'])}
 
     if which == 'null':
         return ret_status
@@ -31,6 +37,46 @@ def load_data_frames(which: str = 'null'):
 
 parameters_df = load_data_frames(which='model parameters new')
 springs_df = load_data_frames(which='springs')
+ccm_df = load_data_frames(which='CCM')
+cfmf_df = load_data_frames(which='CFMF')
+
+
+def plot_pie_charts():
+
+    gs = gridspec.GridSpec(2, 3)
+    fig = plt.figure()
+    colors = ['#c33b2f', '#fda18a', '#e6e5e4', '#a2b1d6', '#436dac']
+
+    ax00 = fig.add_subplot(gs[0, 0])
+    ax01 = fig.add_subplot(gs[0, 1])
+    ax02 = fig.add_subplot(gs[0, 2])
+
+    ax10 = fig.add_subplot(gs[1, 0])
+    ax11 = fig.add_subplot(gs[1, 1])
+    ax12 = fig.add_subplot(gs[1, 2])
+
+    ax00.pie(ccm_df['2000 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
+             colors=colors, autopct='%1.2f%%')
+    ax01.pie(ccm_df['2010 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
+             colors=colors, autopct='%1.2f%%')
+    ax02.pie(ccm_df['2020 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
+             colors=colors, autopct='%1.2f%%')
+
+    ax10.pie(cfmf_df['2000 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
+             colors=colors, autopct='%1.2f%%')
+    ax11.pie(cfmf_df['2010 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
+             colors=colors, autopct='%1.2f%%')
+    ax12.pie(cfmf_df['2020 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
+             colors=colors, autopct='%1.2f%%')
+
+    ax00.set_ylabel('CCM (New Model)')
+    ax10.set_ylabel('CFMFs (Old Model)')
+
+    ax00.set_title('2000 y.')
+    ax01.set_title('2010 y.')
+    ax02.set_title('2020 y.')
+
+    plt.show()
 
 
 def define_equilibrium_surface(year: str = '2000') -> tuple:
@@ -165,3 +211,4 @@ def plot_year_samples(mean_lines: bool = False):
 if __name__ == '__main__':
     plot_year_samples(True)
     plot_equilibrium_surface('2010')
+    plot_pie_charts()
