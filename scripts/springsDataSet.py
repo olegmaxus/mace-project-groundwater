@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import csv
 
-csv_file = open('/Users/dimasokolov/Desktop/finance/datasetSptrings.csv', 'w')
+csv_file = open('datasetSptrings.csv', 'w')
 csv_writer = csv.writer(csv_file)
 csv_writer.writerow(['2020x', '2020y', '2010x', '2010y', '2000x', '2000y'])
 
