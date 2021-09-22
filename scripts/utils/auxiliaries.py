@@ -56,21 +56,21 @@ def plot_pie_charts():
     ax12 = fig.add_subplot(gs[1, 2])
 
     ax00.pie(ccm_df['2000 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
-             colors=colors, autopct='%1.2f%%')
+             colors=colors, autopct='%1.2f%%', textprops={'fontsize': 13})
     ax01.pie(ccm_df['2010 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
-             colors=colors, autopct='%1.2f%%')
+             colors=colors, autopct='%1.2f%%', textprops={'fontsize': 13})
     ax02.pie(ccm_df['2020 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
-             colors=colors, autopct='%1.2f%%')
+             colors=colors, autopct='%1.2f%%', textprops={'fontsize': 13})
 
     ax10.pie(cfmf_df['2000 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
-             colors=colors, autopct='%1.2f%%')
+             colors=colors, autopct='%1.2f%%', textprops={'fontsize': 13})
     ax11.pie(cfmf_df['2010 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
-             colors=colors, autopct='%1.2f%%')
+             colors=colors, autopct='%1.2f%%', textprops={'fontsize': 13})
     ax12.pie(cfmf_df['2020 Percentage'], labels=ccm_df['GPS/Year'], explode=(0.05, 0.05, 0.05, 0.05, 0.05),
-             colors=colors, autopct='%1.2f%%')
+             colors=colors, autopct='%1.2f%%', textprops={'fontsize': 13})
 
-    ax00.set_ylabel('CCM (New Model)')
-    ax10.set_ylabel('CFMFs (Old Model)')
+    ax00.set_ylabel('CCM (New Model)', fontsize=13)
+    ax10.set_ylabel('CFMFs (Old Model)', fontsize=13)
 
     ax00.set_title('2000 yr.')
     ax01.set_title('2010 yr.')
