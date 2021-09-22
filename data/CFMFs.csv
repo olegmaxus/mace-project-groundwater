@@ -1,5 +1,4 @@
-Year,2000,2000,2010,2010,2020,2020
-Parameters,Area(km2),Percentage,Area(km2),Percentage,Area(km2),Percentage
+GPS/Year,2000 Area (km2),2000 Percentage,2010 Area (km2),2010 Percentage,2020 Area (km2),2020 Percentage
 Very Poor,53.38,0.0035,132.61,0.0088,156.75,0.0104
 Poor,2104.75,0.1398,2155.31,0.1431,2299.87,0.1527
 Moderate,5667.88,0.3757,5917.19,0.3929,5513.31,0.3661
