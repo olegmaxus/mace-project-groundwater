@@ -77,6 +77,8 @@ def plot_pie_charts():
     ax02.set_title('2020 y.')
 
     plt.show()
+    
+    return
 
 
 def define_equilibrium_surface(year: str = '2000') -> tuple:
