@@ -149,6 +149,7 @@ def plot_equilibrium_surface(year: str = '2000'):
     ax.set_ylabel('$S\sim n_2$')
     ax.set_zlabel('$GP\sim m_1$')
 
+    _ = plt.suptitle('Equilibrium surface with fold projection', fontsize=14)
     ax.legend(loc='center left', bbox_to_anchor=(1., .87), fontsize=9)
     plt.show()
 
@@ -202,6 +203,8 @@ def plot_year_samples(mean_lines: bool = False):
         ax20.plot(N_20, mean_line, color='#000000', linestyle='--', linewidth=3, label='Mean line for springs data')
 
     ax20.legend(title='2020 yr.', loc=2, fontsize=9)
+
+    _ = plt.suptitle('Samples distribution with respect to bifurcation curve', fontsize=14)
 
     plt.show()
 
