@@ -72,9 +72,9 @@ def plot_pie_charts():
     ax00.set_ylabel('CCM (New Model)')
     ax10.set_ylabel('CFMFs (Old Model)')
 
-    ax00.set_title('2000 y.')
-    ax01.set_title('2010 y.')
-    ax02.set_title('2020 y.')
+    ax00.set_title('2000 yr.')
+    ax01.set_title('2010 yr.')
+    ax02.set_title('2020 yr.')
 
     plt.show()
     
@@ -145,7 +145,7 @@ def plot_equilibrium_surface(year: str = '2000'):
     ax.yaxis.set_major_locator(LinearLocator(5))
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
-    fig.colorbar(surface, shrink=0.5, aspect=5).set_label('Equilibrium surface (' + year + ')')
+    fig.colorbar(surface, shrink=0.5, aspect=5).set_label('Equilibrium surface (' + year + ' yr.)')
 
     ax.set_xlabel('$N\sim n_1$')
     ax.set_ylabel('$S\sim n_2$')
