@@ -40,6 +40,25 @@ springs_df = load_data_frames(which='springs')
 ccm_df = load_data_frames(which='CCM')
 cfmf_df = load_data_frames(which='CFMF')
 
+def gp_roots_evaluator():
+    yrs_col = ['2000', '2010', '2020']
+
+    array_ab = np.empty((2,3))
+    for idx, yr in enumerate(yrs_col):
+        array_ab[0][idx] = parameters_df[yr][0]
+        array_ab[1][idx] = parameters_df[yr][1]
+    array_ab = array_ab.T
+
+    df = pd.dataframe()
+    for idx, yr in enumerate(yrs_col):
+        N = springs_df[yr + 'y']
+        S = springs_df[yr + 'x']
+        temp_arr = np.array([])
+        for i, j in zip(N, S):
+            GP = [np.max(np.real(np.roots([array_ab[idx][0], 0, array_ab[idx][1] * i, -j])))]
+            temp_arr = np.append(temp_arr, GP, axis=idx)
+        df[yr] = pd.Series(temp_arr)
+    return df
 
 def plot_pie_charts():
 
