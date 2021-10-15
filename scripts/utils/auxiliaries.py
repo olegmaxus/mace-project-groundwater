@@ -22,7 +22,6 @@ data_sets = {
 
 
 def load_data_frames(which: str = 'null'):
-
     ret_status = {'model parameters': pd.read_csv(data_sets['model parameters']),
                   'model parameters new': pd.read_csv(data_sets['model parameters new']),
                   'springs': pd.read_csv(data_sets['springs']),
@@ -40,28 +39,29 @@ springs_df = load_data_frames(which='springs')
 ccm_df = load_data_frames(which='CCM')
 cfmf_df = load_data_frames(which='CFMF')
 
+
 def gp_roots_evaluator():
     yrs_col = ['2000', '2010', '2020']
 
-    array_ab = np.empty((2,3))
+    array_ab = np.empty((2, 3))
     for idx, yr in enumerate(yrs_col):
         array_ab[0][idx] = parameters_df[yr][0]
         array_ab[1][idx] = parameters_df[yr][1]
     array_ab = array_ab.T
 
-    df = pd.dataframe()
+    df = pd.DataFrame()
     for idx, yr in enumerate(yrs_col):
         N = springs_df[yr + 'y']
         S = springs_df[yr + 'x']
         temp_arr = np.array([])
         for i, j in zip(N, S):
             GP = [np.max(np.real(np.roots([array_ab[idx][0], 0, array_ab[idx][1] * i, -j])))]
-            temp_arr = np.append(temp_arr, GP, axis=idx)
+            temp_arr = np.hstack((temp_arr, GP))
         df[yr] = pd.Series(temp_arr)
     return df
 
-def plot_pie_charts():
 
+def plot_pie_charts():
     gs = gridspec.GridSpec(2, 3)
     fig = plt.figure()
     colors = ['#c33b2f', '#fda18a', '#e6e5e4', '#a2b1d6', '#436dac']
@@ -96,12 +96,11 @@ def plot_pie_charts():
     ax02.set_title('2020 yr.')
 
     plt.show()
-    
+
     return
 
 
 def define_equilibrium_surface(year: str = '2000') -> tuple:
-
     # creating a mash for input N, GP variables  #
 
     n = np.linspace(-1.2, 1.2, 48)
@@ -123,17 +122,17 @@ def define_equilibrium_surface(year: str = '2000') -> tuple:
 
 
 def define_bifurcation_curve(year: str = '2000') -> tuple:
-
     a, b = parameters_df[year][0], parameters_df[year][1]
     N = np.linspace(0., 1.3, 100)
-    S_1 = a * (np.sqrt(N * (-b)/(3 * a)) ** 3) + b * N * np.sqrt(N * (-b)/(3 * a))  # first bifurcation curve component
-    S_2 = a * (- np.sqrt(N * (-b)/(3 * a)) ** 3) - b * N * np.sqrt(N * (-b)/(3 * a)) # second bifurcation curve component
+    S_1 = a * (np.sqrt(N * (-b) / (3 * a)) ** 3) + b * N * np.sqrt(
+        N * (-b) / (3 * a))  # first bifurcation curve component
+    S_2 = a * (- np.sqrt(N * (-b) / (3 * a)) ** 3) - b * N * np.sqrt(
+        N * (-b) / (3 * a))  # second bifurcation curve component
 
     return N, S_1, S_2
 
 
 def plot_equilibrium_surface(year: str = '2000'):
-
     N, S, GP = define_equilibrium_surface(year)
 
     fig = plt.figure()
@@ -152,8 +151,9 @@ def plot_equilibrium_surface(year: str = '2000'):
 
     # plotting the spring distribution scatter (according to the article data) #
 
-    scatter_springs = ax.scatter(springs_df[year + 'y'].values, springs_df[year + 'x'].values, label='Springs (Samples)',
-                                 color='#ae0001', edgecolor='#000000', linewidths=0.1, zdir='z', zs=-1.1)
+    scatter_springs = ax.scatter(springs_df[year + 'y'].values, springs_df[year + 'x'].values,
+                                gp_roots_evaluator()[year].values, label='Springs (Samples)',
+                                color='#ae0001', edgecolor='#000000', linewidths=0.1, zdir='z')
 
     # setting the aesthetics #
 
@@ -178,7 +178,6 @@ def plot_equilibrium_surface(year: str = '2000'):
 
 
 def plot_year_samples(mean_lines: bool = False):
-
     N_00, S_100, S_200 = define_bifurcation_curve('2000')
     N_10, S_110, S_210 = define_bifurcation_curve('2010')
     N_20, S_120, S_220 = define_bifurcation_curve('2020')
@@ -191,7 +190,8 @@ def plot_year_samples(mean_lines: bool = False):
     ax00.plot(N_00, S_200, color='#d0631b')
     ax00.set_xlabel('Natural composite index $(N)$')
     ax00.set_ylabel('Anthropogenic composite index $(S)$')
-    ax00.scatter(springs_df['2000y'].values, springs_df['2000x'].values, label='Springs (Samples)', linewidths=0.5, edgecolor='#000000', color='#5bc3ec')
+    ax00.scatter(springs_df['2000y'].values, springs_df['2000x'].values, label='Springs (Samples)', linewidths=0.5,
+                 edgecolor='#000000', color='#5bc3ec')
 
     if mean_lines:
         mean_line = [springs_df['2000x'].values.mean()] * len(N_00)
@@ -204,7 +204,8 @@ def plot_year_samples(mean_lines: bool = False):
     ax10.plot(N_10, S_210, color='#d0631b')
     ax10.set_xlabel('Natural composite index $(N)$')
     ax10.set_ylabel('Anthropogenic composite index $(S)$')
-    ax10.scatter(springs_df['2010y'].values, springs_df['2010x'].values, label='Springs (Samples)', linewidths=0.5, edgecolor='#000000', color='#5bc3ec')
+    ax10.scatter(springs_df['2010y'].values, springs_df['2010x'].values, label='Springs (Samples)', linewidths=0.5,
+                 edgecolor='#000000', color='#5bc3ec')
 
     if mean_lines:
         mean_line = [springs_df['2010x'].values.mean()] * len(N_10)
@@ -217,7 +218,8 @@ def plot_year_samples(mean_lines: bool = False):
     ax20.plot(N_00, S_220, color='#d0631b')
     ax20.set_xlabel('Natural composite index $(N)$')
     ax20.set_ylabel('Anthropogenic composite index $(S)$')
-    ax20.scatter(springs_df['2020y'].values, springs_df['2020x'].values, label='Springs (Samples)', linewidths=0.5, edgecolor='#000000', color='#5bc3ec')
+    ax20.scatter(springs_df['2020y'].values, springs_df['2020x'].values, label='Springs (Samples)', linewidths=0.5,
+                 edgecolor='#000000', color='#5bc3ec')
 
     if mean_lines:
         mean_line = [springs_df['2020x'].values.mean()] * len(N_00)
